@@ -4,9 +4,9 @@
 
 #include "UImg.h"
 #include "Bestiole.h"
-
 #include <iostream>
 #include <vector>
+#include <cmath>
 
 using namespace std;
 
@@ -18,7 +18,8 @@ private :
    static const T          white[];
 
    int                     width, height;
-   std::vector<Bestiole>   listeBestioles;
+   std::vector<Bestiole*> listeBestioles;
+   static const double SEUIL_COLLISION;
 
 public :
    Milieu( int _width, int _height );
@@ -29,8 +30,10 @@ public :
 
    void step( void );
 
-   void addMember( const Bestiole & b ) { listeBestioles.push_back(b); listeBestioles.back().initCoords(width, height); }
-   int nbVoisins( const Bestiole & b );
+   void addMember( Bestiole* b );
+   void removeMember( Bestiole* b );  //Ajouté pour supprimer une bestiole du milieu
+   int nbVoisins( Bestiole* b );
+   std::vector<Bestiole*>& getBestioles(){ return listeBestioles; }; //Ajouté pour récupérer la liste des bestioles du milieu
 
 };
 

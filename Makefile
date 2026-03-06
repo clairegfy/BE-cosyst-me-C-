@@ -5,19 +5,34 @@ CXXFLAGS = -Wall -std=c++11 -I . -I$(X11_PREFIX)/include
 LDFLAGS  = -L$(X11_PREFIX)/lib
 LDLIBS   = -lX11 -lpthread
 
-OBJS = Aquarium.o Bestiole.o Milieu.o
+OBJS = Aquarium.o Bestiole.o Milieu.o Gregaire.o Peureuse.o Kamikaze.o Prevoyante.o MultiPersonnalite.o
 
 main: main.cpp $(OBJS)
 	$(CXX) -o $@ $^ $(CXXFLAGS) $(LDFLAGS) $(LDLIBS)
 
 Aquarium.o: Aquarium.cpp Aquarium.h
-	$(CXX) $(CXXFLAGS) -c $<
+	$(CXX) $(CXXFLAGS) -c Aquarium.cpp
 
 Bestiole.o: Bestiole.cpp Bestiole.h
-	$(CXX) $(CXXFLAGS) -c $<
+	$(CXX) $(CXXFLAGS) -c Bestiole.cpp
 
 Milieu.o: Milieu.cpp Milieu.h
-	$(CXX) $(CXXFLAGS) -c $<
+	$(CXX) $(CXXFLAGS) -c Milieu.cpp
+
+Gregaire.o: Gregaire.cpp Gregaire.h
+	$(CXX) $(CXXFLAGS) -c Gregaire.cpp
+
+Peureuse.o: Peureuse.cpp Peureuse.h
+	$(CXX) $(CXXFLAGS) -c Peureuse.cpp
+
+Kamikaze.o: Kamikaze.cpp Kamikaze.h
+	$(CXX) $(CXXFLAGS) -c Kamikaze.cpp
+
+Prevoyante.o: Prevoyante.cpp Prevoyante.h
+	$(CXX) $(CXXFLAGS) -c Prevoyante.cpp
+
+MultiPersonnalite.o: MultiPersonnalite.cpp MultiPersonnalite.h
+	$(CXX) $(CXXFLAGS) -c MultiPersonnalite.cpp
 
 clean:
 	rm -f *.o main

@@ -9,6 +9,7 @@
 const double      Bestiole::AFF_SIZE = 8.;
 const double      Bestiole::MAX_VITESSE = 10.;
 const double      Bestiole::LIMITE_VUE = 30.;
+const int Bestiole::AGE_MAX = 500;
 
 int               Bestiole::next = 0;
 
@@ -24,6 +25,9 @@ Bestiole::Bestiole( void )
    cumulX = cumulY = 0.;
    orientation = static_cast<double>( rand() )/RAND_MAX*2.*M_PI;
    vitesse = static_cast<double>( rand() )/RAND_MAX*MAX_VITESSE;
+   _comportement = nullptr;
+   age    = 0;
+   ageMax = 100 + std::rand() % AGE_MAX;  
 
    couleur = new T[ 3 ];
    couleur[ 0 ] = static_cast<int>( static_cast<double>( rand() )/RAND_MAX*230. );
@@ -47,6 +51,9 @@ Bestiole::Bestiole( const Bestiole & b )
    vitesse = b.vitesse;
    couleur = new T[ 3 ];
    memcpy( couleur, b.couleur, 3*sizeof(T) );
+   _comportement = (b._comportement != nullptr) ? b._comportement->clone() : nullptr;
+   age    = 0;        //repart à 0 pour une nouvelle bestiole
+   ageMax = b.ageMax;
 
 }
 
@@ -55,6 +62,7 @@ Bestiole::~Bestiole( void )
 {
 
    delete[] couleur;
+   delete _comportement;
 
    cout << "dest Bestiole" << endl;
 
@@ -105,15 +113,6 @@ void Bestiole::bouge( int xLim, int yLim )
 
 }
 
-
-void Bestiole::action( Milieu & monMilieu )
-{
-
-   bouge( monMilieu.getWidth(), monMilieu.getHeight() );
-
-}
-
-
 void Bestiole::draw( UImg & support )
 {
 
@@ -144,4 +143,29 @@ bool Bestiole::jeTeVois( const Bestiole & b ) const
    dist = std::sqrt( (x-b.x)*(x-b.x) + (y-b.y)*(y-b.y) );
    return ( dist <= LIMITE_VUE );
 
+}
+
+void Bestiole::setComportement( Comportement* c )
+{
+    delete _comportement;   // libère l'ancien
+    _comportement = c;
+}
+
+void Bestiole::action( Milieu & monMilieu )
+{
+
+    age++; //incrémentation de l'âge de la bestiole
+
+    if ( _comportement != nullptr )
+    {
+        std::vector<Bestiole*>& tous = monMilieu.getBestioles();
+        // construire la liste des voisins détectés
+        std::vector<Bestiole*> voisins;
+        for ( Bestiole* other : tous )
+            if ( other != this && jeTeVois( *other ) )
+                voisins.push_back( other );
+
+        _comportement->action( this, voisins );
+    }
+    bouge( monMilieu.getWidth(), monMilieu.getHeight() );
 }
