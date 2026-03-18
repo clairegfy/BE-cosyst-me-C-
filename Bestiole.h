@@ -4,6 +4,8 @@
 
 #include "UImg.h"
 #include "Comportement.h"
+#include "ICapteur.h"
+#include "IAccessoire.h"
 #include <iostream>
 #include <vector>
 using namespace std;
@@ -33,6 +35,8 @@ private :
 
    T               * couleur;
    Comportement * _comportement;
+   vector<ICapteur*> capteurs;
+   vector<IAccessoire*> accessoires;
 
 private :
    void bouge( int xLim, int yLim );
@@ -57,6 +61,13 @@ public :                                           // Forme canonique :
    void  setVitesse( double v ) { vitesse = v; }
    void  setComportement( Comportement* c );
    bool estMort() const { return age >= ageMax; }
+
+   void ajouterCapteur( ICapteur* c );
+   void ajouterAccessoire( IAccessoire* a );
+   double getVitesseEffective() const;
+   double getCamouflage() const;
+   double getProtectionCollision() const;
+   bool detecte( const Bestiole & b ) const;
 
    friend bool operator==( const Bestiole & b1, const Bestiole & b2 );
 

@@ -1,6 +1,8 @@
 #include "Bestiole.h"
 
 #include "Milieu.h"
+#include "ICapteur.h"
+#include "IAccessoire.h"
 
 #include <cstdlib>
 #include <cmath>
@@ -27,7 +29,7 @@ Bestiole::Bestiole( void )
    vitesse = static_cast<double>( rand() )/RAND_MAX*MAX_VITESSE;
    _comportement = nullptr;
    age    = 0;
-   ageMax = 100 + std::rand() % AGE_MAX;  
+   ageMax = 100 + std::rand() % AGE_MAX;
 
    couleur = new T[ 3 ];
    couleur[ 0 ] = static_cast<int>( static_cast<double>( rand() )/RAND_MAX*230. );
@@ -52,6 +54,13 @@ Bestiole::Bestiole( const Bestiole & b )
    couleur = new T[ 3 ];
    memcpy( couleur, b.couleur, 3*sizeof(T) );
    _comportement = (b._comportement != nullptr) ? b._comportement->clone() : nullptr;
+
+   for ( ICapteur* c : b.capteurs )
+      capteurs.push_back( c->clone() );
+
+   for ( IAccessoire* a : b.accessoires )
+      accessoires.push_back( a->clone() );
+
    age    = 0;        //repart à 0 pour une nouvelle bestiole
    ageMax = b.ageMax;
 
@@ -63,6 +72,12 @@ Bestiole::~Bestiole( void )
 
    delete[] couleur;
    delete _comportement;
+
+   for ( ICapteur* c : capteurs )
+      delete c;
+
+   for ( IAccessoire* a : accessoires )
+      delete a;
 
    cout << "dest Bestiole" << endl;
 
@@ -82,8 +97,9 @@ void Bestiole::bouge( int xLim, int yLim )
 {
 
    double         nx, ny;
-   double         dx = cos( orientation )*vitesse;
-   double         dy = -sin( orientation )*vitesse;
+   double         vitesseEffective = getVitesseEffective();
+   double         dx = cos( orientation )*vitesseEffective;
+   double         dy = -sin( orientation )*vitesseEffective;
    int            cx, cy;
 
 
@@ -136,13 +152,7 @@ bool operator==( const Bestiole & b1, const Bestiole & b2 )
 
 bool Bestiole::jeTeVois( const Bestiole & b ) const
 {
-
-   double         dist;
-
-
-   dist = std::sqrt( (x-b.x)*(x-b.x) + (y-b.y)*(y-b.y) );
-   return ( dist <= LIMITE_VUE );
-
+   return detecte( b );
 }
 
 void Bestiole::setComportement( Comportement* c )
@@ -168,4 +178,59 @@ void Bestiole::action( Milieu & monMilieu )
         _comportement->action( this, voisins );
     }
     bouge( monMilieu.getWidth(), monMilieu.getHeight() );
+}
+
+void Bestiole::ajouterCapteur( ICapteur* c )
+{
+    capteurs.push_back( c );
+}
+
+void Bestiole::ajouterAccessoire( IAccessoire* a )
+{
+    accessoires.push_back( a );
+}
+
+double Bestiole::getVitesseEffective() const
+{
+    double v = vitesse;
+
+    for ( IAccessoire* a : accessoires )
+        v = a->modifierVitesse( v );
+
+    return v;
+}
+
+double Bestiole::getCamouflage() const
+{
+    double camouflage = 0.0;
+
+    for ( IAccessoire* a : accessoires )
+        camouflage += a->getBonusCamouflage();
+
+    return camouflage;
+}
+
+double Bestiole::getProtectionCollision() const
+{
+    double protection = 0.0;
+
+    for ( IAccessoire* a : accessoires )
+        protection += a->getBonusProtection();
+
+    return protection;
+}
+
+bool Bestiole::detecte( const Bestiole & b ) const
+{
+    if ( capteurs.empty() )
+    {
+        double dist = std::sqrt( (x-b.x)*(x-b.x) + (y-b.y)*(y-b.y) );
+        return ( dist <= LIMITE_VUE );
+    }
+
+    for ( ICapteur* c : capteurs )
+        if ( c->detecte( *this, b ) )
+            return true;
+
+    return false;
 }
