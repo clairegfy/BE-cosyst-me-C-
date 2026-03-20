@@ -14,6 +14,7 @@ public:
 
     double getBonusProtection() const override;
     double modifierVitesse(double vitesseBase) const override;
+    double getBonusCamouflage() const override;
 
     IAccessoire* clone() const override { return new Carapace(*this); }
 };

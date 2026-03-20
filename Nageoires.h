@@ -12,6 +12,8 @@ public:
     Nageoires(double f);
 
     double modifierVitesse(double vitesseBase) const override;
+    double getBonusCamouflage() const override;
+    double getBonusProtection() const override;
     IAccessoire* clone() const override { return new Nageoires(*this); }
 };
 

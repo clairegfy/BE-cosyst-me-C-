@@ -15,3 +15,8 @@ double Carapace::modifierVitesse(double vitesseBase) const
 {
     return vitesseBase * ralentissement;
 }
+
+double Carapace::getBonusCamouflage() const
+{
+    return 0.0;
+}

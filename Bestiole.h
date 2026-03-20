@@ -21,6 +21,7 @@ private :
    static const double     MAX_VITESSE;
    static const double     LIMITE_VUE;
    static const int AGE_MAX;
+   static const double PROBA_CLONAGE; // probabilité par pas de temps de clonage spontané d'une bestiole
 
    static int              next;
 
@@ -46,8 +47,9 @@ public :                                           // Forme canonique :
    Bestiole( const Bestiole & b );                 // Constructeur de copies
    virtual ~Bestiole( void );                              // Destructeur
                                                    // Operateur d'affectation binaire par defaut
-   void action( Milieu & monMilieu );
+   void action( Milieu & monMilieu, std::vector<Bestiole*> & aAjouter );
    void draw( UImg & support );
+   Bestiole* clone() const;
 
    bool jeTeVois( const Bestiole & b ) const;
 

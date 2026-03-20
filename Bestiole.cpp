@@ -12,6 +12,7 @@ const double      Bestiole::AFF_SIZE = 8.;
 const double      Bestiole::MAX_VITESSE = 10.;
 const double      Bestiole::LIMITE_VUE = 30.;
 const int Bestiole::AGE_MAX = 500;
+const double Bestiole::PROBA_CLONAGE = 0.001;  // 0.1% de chance par pas de temps de clonage spontané
 
 int               Bestiole::next = 0;
 
@@ -54,6 +55,11 @@ Bestiole::Bestiole( const Bestiole & b )
    couleur = new T[ 3 ];
    memcpy( couleur, b.couleur, 3*sizeof(T) );
    _comportement = (b._comportement != nullptr) ? b._comportement->clone() : nullptr;
+   for ( ICapteur* c : b.capteurs )
+        capteurs.push_back( c->clone() );
+
+   for ( IAccessoire* a : b.accessoires )
+        accessoires.push_back( a->clone() );
 
    for ( ICapteur* c : b.capteurs )
       capteurs.push_back( c->clone() );
@@ -75,9 +81,11 @@ Bestiole::~Bestiole( void )
 
    for ( ICapteur* c : capteurs )
       delete c;
+    capteurs.clear();
 
    for ( IAccessoire* a : accessoires )
       delete a;
+    accessoires.clear();
 
    cout << "dest Bestiole" << endl;
 
@@ -161,11 +169,17 @@ void Bestiole::setComportement( Comportement* c )
     _comportement = c;
 }
 
-void Bestiole::action( Milieu & monMilieu )
+void Bestiole::action( Milieu & monMilieu, std::vector<Bestiole*> & aAjouter )
 {
 
     age++; //incrémentation de l'âge de la bestiole
 
+    // auto-clonage spontané
+    double probaClonage = static_cast<double>( std::rand() ) / RAND_MAX;
+    if ( probaClonage < PROBA_CLONAGE )
+        aAjouter.push_back( clone() );
+
+    //comportement
     if ( _comportement != nullptr )
     {
         std::vector<Bestiole*>& tous = monMilieu.getBestioles();
@@ -233,4 +247,9 @@ bool Bestiole::detecte( const Bestiole & b ) const
             return true;
 
     return false;
+}
+
+Bestiole* Bestiole::clone() const
+{
+    return new Bestiole( *this ); 
 }

@@ -5,7 +5,7 @@ CXXFLAGS = -Wall -std=c++11 -I . -I$(X11_PREFIX)/include
 LDFLAGS  = -L$(X11_PREFIX)/lib
 LDLIBS   = -lX11 -lpthread
 
-OBJS = Aquarium.o Bestiole.o Milieu.o Gregaire.o Peureuse.o Kamikaze.o Prevoyante.o MultiPersonnalite.o Yeux.o Oreilles.o Nageoires.o Carapace.o Camouflage.o SimMemento.o SimulationAnalyser.o
+OBJS = Aquarium.o Bestiole.o Milieu.o Gregaire.o Peureuse.o Kamikaze.o Prevoyante.o MultiPersonnalite.o BestiolesFactory.o PopulationConfig.o  Yeux.o Oreilles.o Nageoires.o Carapace.o Camouflage.o SimMemento.o SimulationAnalyser.o
 
 main: main.cpp $(OBJS)
 	$(CXX) -o $@ $^ $(CXXFLAGS) $(LDFLAGS) $(LDLIBS)
@@ -33,6 +33,15 @@ Prevoyante.o: Prevoyante.cpp Prevoyante.h
 
 MultiPersonnalite.o: MultiPersonnalite.cpp MultiPersonnalite.h
 	$(CXX) $(CXXFLAGS) -c MultiPersonnalite.cpp
+
+BestiolesFactory.o: BestiolesFactory.cpp BestiolesFactory.h
+	$(CXX) $(CXXFLAGS) -c BestiolesFactory.cpp
+
+PopulationConfig.o: PopulationConfig.cpp PopulationConfig.h
+	$(CXX) $(CXXFLAGS) -c PopulationConfig.cpp
+
+: PrototypeRegistry.cpp PrototypeRegistry.h
+	$(CXX) $(CXXFLAGS) -c PrototypeRegistry.cpp
 
 Yeux.o: Yeux.cpp Yeux.h
 	$(CXX) $(CXXFLAGS) -c Yeux.cpp

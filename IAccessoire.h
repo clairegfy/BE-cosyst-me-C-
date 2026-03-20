@@ -4,11 +4,11 @@
 class IAccessoire
 {
 public:
-    virtual double modifierVitesse(double vitesseBase) const { return vitesseBase; }
-    virtual double getBonusCamouflage() const { return 0.0; }
-    virtual double getBonusProtection() const { return 0.0; }
-    virtual IAccessoire* clone() const = 0;
-    virtual ~IAccessoire() {}
+    virtual double modifierVitesse(double vitesseBase) const=0;
+    virtual double getBonusCamouflage() const=0;
+    virtual double getBonusProtection() const=0;
+    virtual IAccessoire* clone() const=0;
+    virtual ~IAccessoire() = default;
 };
 
 #endif

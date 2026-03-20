@@ -3,15 +3,12 @@
 
 #include "Bestiole.h"
 #include "PopulationConfig.h"
-#include "PrototypeRegistry.h"
-
-class Milieu;
+#include <vector>
 
 class BestiolesFactory
 {
 private:
     static BestiolesFactory* instance;
-    PrototypeRegistry registry;
 
     BestiolesFactory();
 
@@ -23,10 +20,7 @@ public:
     Bestiole* createKamikaze();
     Bestiole* createMulti();
 
-    void initialiserPrototypes();
-    Bestiole* cloneBestiole( const std::string& nom );
-
-    void peuplerMilieu( Milieu& milieu, const PopulationConfig& config );
+    std::vector<Bestiole*> creerPopulation( const PopulationConfig& config );
 };
 
 #endif

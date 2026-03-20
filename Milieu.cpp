@@ -43,19 +43,15 @@ void Milieu::removeMember( Bestiole* b )
 
 void Milieu::notifier( const EvenementSim& e )
 {
+    BestiolesFactory* factory = BestiolesFactory::getInstance();
+
     if ( e.type == NAISSANCE )
     {
-        Bestiole* b = new Bestiole();
-
-        int tirage = std::rand() % 3;
-        if ( tirage == 0 )
-            b->setComportement( new Gregaire() );
-        else if ( tirage == 1 )
-            b->setComportement( new Peureuse() );
-        else
-            b->setComportement( new Kamikaze() );
-
-        addMember( b );
+        int tirage = std::rand() % 4;
+        if      ( tirage == 0 ) addMember( factory->createGregaire() );
+        else if ( tirage == 1 ) addMember( factory->createPeureuse() );
+        else if ( tirage == 2 ) addMember( factory->createKamikaze() );
+        else                    addMember( factory->createMulti()    );
     }
 
     else if ( e.type == MORT )
@@ -73,28 +69,28 @@ void Milieu::notifier( const EvenementSim& e )
         {
             int index = std::rand() % listeBestioles.size();
             Bestiole* b = listeBestioles[index];
-
+            // utilise la factory pour créer un comportement cohérent
             int tirage = std::rand() % 3;
-            if ( tirage == 0 )
-                b->setComportement( new Gregaire() );
-            else if ( tirage == 1 )
-                b->setComportement( new Peureuse() );
-            else
-                b->setComportement( new Kamikaze() );
+            if      ( tirage == 0 ) b->setComportement( new Gregaire()  );
+            else if ( tirage == 1 ) b->setComportement( new Peureuse()  );
+            else                    b->setComportement( new Kamikaze()  );
         }
     }
 }
 
 void Milieu::step( void )
 {
+
     cimg_forXY( *this, px, py )
         fillC( px, py, 0, white[0], white[1], white[2] );
 
+    // mort par vieillesse
     std::vector<Bestiole*> aMourir;
     for ( Bestiole* b : listeBestioles )
         if ( b->estMort() )
             aMourir.push_back( b );
 
+    // collisions
     for ( int i = 0; i < (int)listeBestioles.size(); ++i )
     {
         for ( int j = i+1; j < (int)listeBestioles.size(); ++j )
@@ -132,14 +128,22 @@ void Milieu::step( void )
         }
     }
 
+    // supprimer les bestioles mortes
     for ( Bestiole* b : aMourir )
         removeMember( b );
 
+    // déplacement, clonage et affichage
+    std::vector<Bestiole*> aAjouter;
+
     for ( Bestiole* b : listeBestioles )
     {
-        b->action( *this );
+        b->action( *this , aAjouter);
         b->draw( *this );
     }
+
+    // ajouter les nouvelles bestioles issues de l'action
+    for ( Bestiole* b : aAjouter )
+        addMember( b );
 
     memento.save( listeBestioles.size() );
 }

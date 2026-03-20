@@ -3,7 +3,6 @@
 #include "Peureuse.h"
 #include "Kamikaze.h"
 #include "MultiPersonnalite.h"
-#include "Milieu.h"
 #include "Yeux.h"
 #include "Oreilles.h"
 #include "Nageoires.h"
@@ -77,30 +76,21 @@ Bestiole* BestiolesFactory::createMulti()
     return b;
 }
 
-void BestiolesFactory::initialiserPrototypes()
+std::vector<Bestiole*> BestiolesFactory::creerPopulation( const PopulationConfig& config )
 {
-    registry.enregistrerPrototype( "gregaire", createGregaire() );
-    registry.enregistrerPrototype( "peureuse", createPeureuse() );
-    registry.enregistrerPrototype( "kamikaze", createKamikaze() );
-    registry.enregistrerPrototype( "multi", createMulti() );
-}
+    std::vector<Bestiole*> population;
 
-Bestiole* BestiolesFactory::cloneBestiole( const std::string& nom )
-{
-    return registry.cloner( nom );
-}
-
-void BestiolesFactory::peuplerMilieu( Milieu& milieu, const PopulationConfig& config )
-{
     for ( int i = 0; i < config.getNbGregaires(); ++i )
-        milieu.addMember( createGregaire() );
+        population.push_back( createGregaire() );
 
     for ( int i = 0; i < config.getNbPeureuses(); ++i )
-        milieu.addMember( createPeureuse() );
+        population.push_back( createPeureuse() );
 
     for ( int i = 0; i < config.getNbKamikazes(); ++i )
-        milieu.addMember( createKamikaze() );
+        population.push_back( createKamikaze() );
 
     for ( int i = 0; i < config.getNbMulti(); ++i )
-        milieu.addMember( createMulti() );
+        population.push_back( createMulti() );
+
+    return population;
 }

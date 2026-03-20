@@ -9,6 +9,7 @@
 #include <iostream>
 #include <vector>
 #include <cmath>
+#include "BestiolesFactory.h"
 
 using namespace std;
 
