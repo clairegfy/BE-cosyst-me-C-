@@ -206,15 +206,11 @@ Les éléments graphiques suivants s'y superposent selon l'équipement de la bes
 
 | Pattern | Classes concernées | Description |
 |---|---|---|
-| **Strategy** | `Comportement`, `Gregaire`, `Peureuse`, `Kamikaze`, `Prevoyante`, `MultiPersonnalite` | Comportement interchangeable à la volée |
-| **Décorateur** | `ICapteur`, `IAccessoire` et leurs sous-classes | Ajout de capteurs/accessoires sans modifier `Bestiole` |
-| **Composite** | `MultiPersonnalite` | Agrège plusieurs comportements |
-| **Observer** | `EvenementObserver`, `EvenementSim`, `Milieu` | Le Milieu notifie ses abonnés à chaque naissance/mort/changement |
-| **Mémento** | `SimMemento`, `SimulationAnalyser` | Sauvegarde l'historique de population ; bilan affiché en fin de simulation |
-| **Factory** | `BestiolesFactory` | Crée des bestioles entièrement configurées (comportement + capteurs + accessoires) |
-| **Singleton** | `BestiolesFactory` | Instance unique de la factory |
-| **Prototype** | `PrototypeRegistry` | Clonage de bestioles-types enregistrées par nom |
-
+| **Strategy** | `ICapteur`, `Yeux`, `Oreilles` | Algorithme de détection encapsulé — cône directionnel ou omnidirectionnel |
+| **Prototype** | `Bestiole::clone()` | L'objet se clone lui-même — auto-clonage spontané |
+| **Simple Factory + Singleton** | `BestiolesFactory` | Instance unique qui crée des bestioles entièrement configurées |
+| **Observer** | `EvenementObserver`, `Milieu`, `Aquarium` | `Aquarium` notifie `Milieu` sur événements clavier (N/M/C) |
+| **Memento** | `SimMemento`, `SimulationAnalyser` | Historique de population — bilan affiché en fin de simulation |
 ---
 
 ## Prérequis
@@ -277,12 +273,13 @@ La simulation tourne jusqu'à fermeture de la fenêtre.
 
 ### Population par défaut (`main.cpp`)
 
-| Comportement | Capteur(s) | Accessoire | Nombre |
+| Comportement | Nombre |
 |---|---|---|---|
-| Grégaire | Yeux | Nageoires | 5 |
-| Peureuse | Oreilles | Camouflage | 5 |
-| Kamikaze | Yeux | Carapace | 5 |
-| Multi-personnalité (Grégaire + Kamikaze) | Yeux + Oreilles | — | 5 |
+| Grégaire |  5 |
+| Peureuse | 5 |
+| Kamikaze | 5 |
+| Prévoyante | 5 |
+| Multi-personnalité | 5 |
 
 ---
 
@@ -306,7 +303,7 @@ for ( int i = 0; i < 3; ++i ) {
 Ou utilisez la **factory** et `PopulationConfig` pour une configuration centralisée :
 
 ```cpp
-PopulationConfig cfg( 10, 5, 3, 2 );  // g, p, k, multi
+PopulationConfig cfg( 10, 5, 3, 4, 2 );  // g, p, k, pr, multi
 BestiolesFactory::getInstance()->peuplerMilieu( ecosysteme.getMilieu(), cfg );
 ```
 
