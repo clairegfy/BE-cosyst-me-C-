@@ -2,6 +2,7 @@
 #include "Gregaire.h"
 #include "Peureuse.h"
 #include "Kamikaze.h"
+#include "Prevoyante.h"
 #include "MultiPersonnalite.h"
 #include "Yeux.h"
 #include "Oreilles.h"
@@ -60,6 +61,15 @@ Bestiole* BestiolesFactory::createKamikaze()
     return b;
 }
 
+Bestiole* BestiolesFactory::createPrevoyante()
+{
+    Bestiole* b = new Bestiole();
+    b->setComportement( new Prevoyante() );
+    b->ajouterCapteur( new Yeux( 1.5, 80.0, 1.0 ) );   // grande portée visuelle
+    b->ajouterAccessoire( new Nageoires( 1.2 ) );        // rapide pour esquiver
+    return b;
+}
+
 Bestiole* BestiolesFactory::createMulti()
 {
     Bestiole* b = new Bestiole();
@@ -88,6 +98,9 @@ std::vector<Bestiole*> BestiolesFactory::creerPopulation( const PopulationConfig
 
     for ( int i = 0; i < config.getNbKamikazes(); ++i )
         population.push_back( createKamikaze() );
+
+    for ( int i = 0; i < config.getNbPrevoyantes(); ++i )
+        population.push_back( createPrevoyante() );
 
     for ( int i = 0; i < config.getNbMulti(); ++i )
         population.push_back( createMulti() );

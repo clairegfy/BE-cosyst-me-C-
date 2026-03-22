@@ -18,6 +18,7 @@ public:
     Bestiole* createGregaire();
     Bestiole* createPeureuse();
     Bestiole* createKamikaze();
+    Bestiole* createPrevoyante();
     Bestiole* createMulti();
 
     std::vector<Bestiole*> creerPopulation( const PopulationConfig& config );

@@ -47,10 +47,11 @@ void Milieu::notifier( const EvenementSim& e )
 
     if ( e.type == NAISSANCE )
     {
-        int tirage = std::rand() % 4;
+        int tirage = std::rand() % 5;
         if      ( tirage == 0 ) addMember( factory->createGregaire() );
         else if ( tirage == 1 ) addMember( factory->createPeureuse() );
         else if ( tirage == 2 ) addMember( factory->createKamikaze() );
+        else if ( tirage == 3 ) addMember( factory->createPrevoyante() );
         else                    addMember( factory->createMulti()    );
     }
 
