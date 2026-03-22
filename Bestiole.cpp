@@ -5,7 +5,7 @@
 #include "IAccessoire.h"
 #include "Yeux.h"
 #include "Oreilles.h"
-
+#include "Carapace.h"
 #include <cstdlib>
 #include <cmath>
 
@@ -170,7 +170,40 @@ void Bestiole::draw( UImg & support )
         support.draw_circle( xOeilGauche, yOeilGauche, AFF_SIZE/9., couleurYeux );
         support.draw_circle( xOeilDroit, yOeilDroit, AFF_SIZE/9., couleurYeux );
    }
-   
+
+    //DESSIN DES OREILLES
+    bool aDesOreilles = false;
+    for (auto c : capteurs) {
+        if (dynamic_cast<Oreilles*>(c) != nullptr){
+            aDesOreilles = true;
+            break;
+        }
+    }
+    if (aDesOreilles) {
+        const char couleurOreilles[] = {50, 50, 50};
+        double distOreilles = AFF_SIZE/2.2;
+        double xOreilleGauche = xt + cos( orientation + M_PI/2.2 )*distOreilles;
+        double yOreilleGauche = yt - sin( orientation + M_PI/2.2 )*distOreilles;
+
+        double xOreilleDroite = xt + cos( orientation - M_PI/2.2 )*distOreilles;
+        double yOreilleDroite = yt - sin( orientation - M_PI/2.2 )*distOreilles;
+
+        support.draw_circle( xOreilleGauche, yOreilleGauche, 2., couleurOreilles );
+        support.draw_circle( xOreilleDroite, yOreilleDroite, 2., couleurOreilles );
+   }
+
+   //DESSIN DE LA CARAPACE
+   bool aUneCarapace = false;
+    for (auto a : accessoires) {
+        if (dynamic_cast<Carapace*>(a) != nullptr){
+            aUneCarapace = true;
+            break;
+        }
+    }
+    if (aUneCarapace) {
+        const char couleurCarapace[] = { 0, 0, 0 };
+        support.draw_circle(x,y, AFF_SIZE*1.1, couleurCarapace, 1., ~0U);
+    }
 }
 
 
