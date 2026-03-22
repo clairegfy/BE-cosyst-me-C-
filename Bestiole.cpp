@@ -6,6 +6,9 @@
 #include "Yeux.h"
 #include "Oreilles.h"
 #include "Carapace.h"
+#include "Nageoires.h"
+#include "Camouflage.h"
+
 #include <cstdlib>
 #include <cmath>
 
@@ -144,6 +147,8 @@ void Bestiole::draw( UImg & support )
     unsigned char r, g, b;
     _comportement->getCouleur(r, g, b);
     const unsigned char couleur[] = { r, g, b };
+
+    
    double         xt = x + cos( orientation )*AFF_SIZE/2.1;
    double         yt = y - sin( orientation )*AFF_SIZE/2.1;
 
@@ -151,6 +156,19 @@ void Bestiole::draw( UImg & support )
    support.draw_ellipse( x, y, AFF_SIZE, AFF_SIZE/5., -orientation/M_PI*180., couleur );
    support.draw_circle( xt, yt, AFF_SIZE/2., couleur );
 
+   //CAMOUFLAGE
+    bool aUnCamouflage = false;
+    for (auto a : accessoires) {
+        if (dynamic_cast<Camouflage*>(a) != nullptr){
+            aUnCamouflage = true;
+            break;
+        }
+    }
+    if (aUnCamouflage) {
+    const unsigned char blanc[] = { 255, 255, 255 };
+       // On dessine le point blanc au centre de la bestiole
+       support.draw_circle(x, y, 3.0, blanc);
+   }
    //DESSIN DES YEUX
    bool aDesYeux = false;
    for (auto c : capteurs) {
@@ -204,6 +222,42 @@ void Bestiole::draw( UImg & support )
         const char couleurCarapace[] = { 0, 0, 0 };
         support.draw_circle(x,y, AFF_SIZE*1.1, couleurCarapace, 1., ~0U);
     }
+
+    //DESSIN DES NAGEOIRES
+    bool aDesNageoires = false;
+    for(auto a : accessoires){
+        if (dynamic_cast<Nageoires*>(a) != nullptr){
+            aDesNageoires = true;
+            break;
+        }
+    }
+    
+   if (aDesNageoires) {
+       const unsigned char noirPur[] = { 0, 0, 0 }; 
+
+       
+       double xG1 = x + cos(orientation + M_PI/3.0) * (AFF_SIZE / 2.0); // Plus vers l'avant
+       double yG1 = y - sin(orientation + M_PI/3.0) * (AFF_SIZE / 2.0);
+       
+       double xG2 = x + cos(orientation + M_PI/1.2) * (AFF_SIZE / 2.0); // Plus vers l'arrière
+       double yG2 = y - sin(orientation + M_PI/1.2) * (AFF_SIZE / 2.0);
+       
+       double xG3 = x + cos(orientation + M_PI/1.8) * (AFF_SIZE * 1.5);
+       double yG3 = y - sin(orientation + M_PI/1.8) * (AFF_SIZE * 1.5);
+
+       support.draw_triangle(xG1, yG1, xG2, yG2, xG3, yG3, noirPur);
+
+       double xD1 = x + cos(orientation - M_PI/3.0) * (AFF_SIZE / 2.0);
+       double yD1 = y - sin(orientation - M_PI/3.0) * (AFF_SIZE / 2.0);
+       
+       double xD2 = x + cos(orientation - M_PI/1.2) * (AFF_SIZE / 2.0);
+       double yD2 = y - sin(orientation - M_PI/1.2) * (AFF_SIZE / 2.0);
+       
+       double xD3 = x + cos(orientation - M_PI/1.8) * (AFF_SIZE * 1.5);
+       double yD3 = y - sin(orientation - M_PI/1.8) * (AFF_SIZE * 1.5);
+
+       support.draw_triangle(xD1, yD1, xD2, yD2, xD3, yD3, noirPur);
+   }
 }
 
 
