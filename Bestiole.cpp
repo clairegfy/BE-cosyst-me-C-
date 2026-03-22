@@ -3,12 +3,14 @@
 #include "Milieu.h"
 #include "ICapteur.h"
 #include "IAccessoire.h"
+#include "Yeux.h"
+#include "Oreilles.h"
 
 #include <cstdlib>
 #include <cmath>
 
 
-const double      Bestiole::AFF_SIZE = 8.;
+const double      Bestiole::AFF_SIZE = 16.;
 const double      Bestiole::MAX_VITESSE = 10.;
 const double      Bestiole::LIMITE_VUE = 30.;
 const int Bestiole::AGE_MAX = 500;
@@ -149,6 +151,26 @@ void Bestiole::draw( UImg & support )
    support.draw_ellipse( x, y, AFF_SIZE, AFF_SIZE/5., -orientation/M_PI*180., couleur );
    support.draw_circle( xt, yt, AFF_SIZE/2., couleur );
 
+   //DESSIN DES YEUX
+   bool aDesYeux = false;
+   for (auto c : capteurs) {
+        if (dynamic_cast<Yeux*>(c) != nullptr){
+            aDesYeux = true;
+            break;
+        }
+   }
+   if (aDesYeux) {
+        const char couleurYeux[] = { 0, 0, 0 };
+        double xOeilGauche = xt + cos( orientation + M_PI/2. )*AFF_SIZE/5.;
+        double yOeilGauche = yt - sin( orientation + M_PI/2.)*AFF_SIZE/5.;
+
+        double xOeilDroit = xt + cos( orientation - M_PI/2. )*AFF_SIZE/5.;
+        double yOeilDroit = yt - sin( orientation - M_PI/2.)*AFF_SIZE/5.;
+
+        support.draw_circle( xOeilGauche, yOeilGauche, AFF_SIZE/9., couleurYeux );
+        support.draw_circle( xOeilDroit, yOeilDroit, AFF_SIZE/9., couleurYeux );
+   }
+   
 }
 
 
