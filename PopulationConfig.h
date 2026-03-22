@@ -7,6 +7,7 @@ private:
     int nbGregaires;
     int nbPeureuses;
     int nbKamikazes;
+    int nbPrevoyantes;
     int nbMulti;
 
 public:
